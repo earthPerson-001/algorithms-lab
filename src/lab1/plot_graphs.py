@@ -2,10 +2,16 @@ import random
 import time
 
 import matplotlib.pyplot as plt
+import math
+import numpy as np
 from insertion_sort import insertion_sort
 from selection_sort import selection_sort
 
 from tqdm import tqdm
+from pathlib import Path
+
+LAB1_PATH = Path(__file__).parent
+GRAPHS_FOLDER_PATH = LAB1_PATH.joinpath("graphs")
 
 
 def get_n_random(n: int) -> list:
@@ -20,25 +26,34 @@ def get_n_random(n: int) -> list:
     return [random.randint(-1000, 1000) for _ in range(n)]
 
   
-def plot_graphs():
-    max_length = 50_000
-    step_size = 1000
-    
-    number = []
-    selection_diff_time = []
-    insertion_diff_time = []
-    insertion_best_diff_time = []
-    insertion_worst_diff_time = []
+def plot_graphs(max_length: int = 2_000, step_size: int = 10, dpi_for_saved_image: float = 1000):
+    """
+    Plot graph for comparison of selection sort and various cases of insertion sort.
 
-    for i in tqdm(range(10, max_length, step_size)):
-        random_array = get_n_random(i)
+    Parameters
+    ----------
+    max_length: The maximum length for list which is given for sorting algorithm
+    step_size: Increment for choosing the next length of array
+    dpi_for_saved_image: resolution in dots per inch for saved image
+    """
+
+    iteration_count = math.ceil(max_length / step_size)  # one greater to account for possible out of bounds error
+    
+    number = np.ndarray(shape=(iteration_count,))
+    selection_diff_time = np.ndarray(shape=(iteration_count,))
+    insertion_diff_time = np.ndarray(shape=(iteration_count,))
+    insertion_best_diff_time = np.ndarray(shape=(iteration_count,))
+    insertion_worst_diff_time = np.ndarray(shape=(iteration_count,))
+
+    for iteration_count, n_elements in enumerate(tqdm(range(1, max_length, step_size))):
+        random_array = get_n_random(n_elements)
         
         selection_start = time.time()
         _ = selection_sort(random_array.copy())
         selection_end = time.time()
         
         insertion_start = time.time()
-        insertion_sorted = insertion_sort(random_array.copy())
+        insertion_sorted = insertion_sort(random_array) # no need to copy since it won't be used again
         insertion_end = time.time()
 
         insertion_best_start = time.time()
@@ -46,14 +61,14 @@ def plot_graphs():
         insertion_best_end = time.time()
 
         insertion_worst_start = time.time()
-        insertion_sorted = insertion_sort(insertion_sorted.copy()[::-1])
+        _ = insertion_sort(insertion_sorted[::-1]) # no need to copy since it won't be used again
         insertion_worst_end = time.time()
         
-        number.append(i)
-        selection_diff_time.append(selection_end - selection_start)
-        insertion_diff_time.append(insertion_end - insertion_start)
-        insertion_best_diff_time.append(insertion_best_end-insertion_best_start)
-        insertion_worst_diff_time.append(insertion_worst_end-insertion_worst_start)
+        number[iteration_count] = n_elements
+        selection_diff_time[iteration_count] = (selection_end - selection_start)
+        insertion_diff_time[iteration_count] = (insertion_end - insertion_start)
+        insertion_best_diff_time[iteration_count] = (insertion_best_end-insertion_best_start)
+        insertion_worst_diff_time[iteration_count] = (insertion_worst_end-insertion_worst_start)
 
     fig, ax = plt.subplots()
     ax.plot(number, selection_diff_time, label="Selection Sort")
@@ -63,8 +78,12 @@ def plot_graphs():
     ax.legend(loc = 'upper left')
     plt.xlabel("Number of Elements (n)")
     plt.ylabel("Time taken(t) [Seconds]")
+    plt.savefig(GRAPHS_FOLDER_PATH.joinpath(f"graph_{max_length}.png"), format="png", dpi=dpi_for_saved_image)
     plt.show()
     
 
 if __name__=="__main__":
-    plot_graphs()
+    max_length_of_arrays = 2_000
+    step_size = int(0.01 * max_length_of_arrays)
+
+    plot_graphs(max_length_of_arrays, step_size)
