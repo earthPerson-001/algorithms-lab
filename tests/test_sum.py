@@ -1,6 +1,7 @@
 import unittest
 
-import setup_test # to setup the paths and other related things
+from setup_test import setup_paths # to setup the paths and other related things
+setup_paths()
 
 from src.lab1.sum import sum
 

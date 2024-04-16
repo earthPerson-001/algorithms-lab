@@ -16,3 +16,9 @@ def selection_sort(arr: list) -> list:
         arr[smallest], arr[i] = arr[i], arr[smallest]
             
     return arr
+
+if __name__=="__main__":
+    arr = [2,0,3,1,5]
+    return_arr = selection_sort(arr)
+
+    print("After applying selection sort: ", return_arr)
