@@ -5,6 +5,7 @@ setup_paths()
 
 from src.lab1.insertion_sort import insertion_sort
 from src.lab1.selection_sort import selection_sort
+from src.lab1.merge_sort import merge_sort
 
 
 class InsertionSortTest(unittest.TestCase):
@@ -48,8 +49,30 @@ class SelectionSortTest(unittest.TestCase):
     
     def test_selection_negative(self):
         arr = [-2,-3,-1,0,-5]
-        result = insertion_sort(arr)
+        result = selection_sort(arr)
         self.assertListEqual(result, [-5, -3, -2, -1, 0]) 
+   
+class MergeSortTest(unittest.TestCase):
+    
+    def test_merge_five(self):
+        arr = [2,3,1,0,5]
+        merge_sort(arr)
+        self.assertListEqual(arr, [0,1,2,3,5])
+        
+    def test_merge_empty(self):
+        arr = []
+        merge_sort(arr)
+        self.assertListEqual(arr, []) 
+        
+    def test_merge_sorted(self):
+        arr = [1,2,3,4,5]
+        merge_sort(arr)
+        self.assertListEqual(arr, [1,2,3,4,5]) 
+    
+    def test_merge_negative(self):
+        arr = [-2,-3,-1,0,-5]
+        merge_sort(arr)
+        self.assertListEqual(arr, [-5, -3, -2, -1, 0]) 
 
 if __name__=='__main__':
     unittest.main()
