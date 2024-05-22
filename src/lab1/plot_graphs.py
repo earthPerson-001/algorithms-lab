@@ -16,7 +16,7 @@ GRAPHS_FOLDER_PATH = LAB1_PATH.joinpath("graphs")
 
 
 def get_n_random(n: int) -> list:
-    """"
+    """
     n: number of elements in the list
 
     Returns
@@ -29,7 +29,7 @@ def get_n_random(n: int) -> list:
   
 def plot_graphs(max_length: int = 2_000, step_size: int = 10, dpi_for_saved_image: float = 1000):
     """
-    Plot graph for comparison of selection sort and various cases of insertion sort.
+    Plot graph for comparison of selection sort, various cases of insertion sort and merge sort.
 
     Parameters
     ----------
