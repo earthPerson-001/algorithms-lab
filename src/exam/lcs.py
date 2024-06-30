@@ -69,8 +69,21 @@ def tabulation_lcs(seq1, seq2):
             else:
                 table[i][j] = max(table[i-1][j], table[i][j-1])
 
+    sequence=""
+    i = n
+    j = m
+    while(i >= 0 and j >= 0):
+        if table[i][j] != max(table[i-1][j], table[i][j-1]):
+            i-=1
+            j-=1
+            sequence += seq1[i]
+        elif table[i-1][j] > table[i][j-1] :
+            i-=1
+        else:
+            j-=1
 
-    return table[n][m]
+
+    return table[n][m], sequence[::-1]
     
 
 class TestRecursiveLcs(unittest.TestCase):
@@ -98,9 +111,14 @@ class TestDynamicIterativeLcs(unittest.TestCase):
     def test_tabular_iterative_lcs_three(self):
         seq1 = "abcd"
         seq2 = "acd"
-        expected = len("acd")
+        expected_seq = "acd"
+        expected_len = len(expected_seq)
 
-        self.assertEqual(tabulation_lcs(seq1, seq2), expected)
+        seq_len, seq = tabulation_lcs(seq1, seq2)
+
+        self.assertEqual(seq_len, expected_len)
+        self.assertEqual(seq, expected_seq)
+
 
 if __name__ == "__main__":
     unittest.main()
